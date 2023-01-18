@@ -2,7 +2,35 @@ const { Enrollment, User } = require('../models/index.js')
 const { errorResonse, succesResponse } = require('./JsonDefault.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer');
 
+const sendMail = async (req, res) => {
+
+    const transporter = nodemailer.createTransport({
+        port: 465,               // true for 465, false for other ports
+        host: "smtp.gmail.com",
+        auth: {
+            user: 'artetismail@gmail.com',
+            pass: 'yvtzsttxrxaqypkr',
+        },
+        secure: true,
+    });
+    const mailData = {
+        from: 'artetismail@gmail.com',  // sender address
+        to: 'malintanhernawanputra.net@gmail.com',   // list of receivers
+        subject: 'OTP Verifikasi ',
+        text: 'OTP Verifikasi',
+        html: 'Berikut kode OTP Anda <b>40375</b> ',
+    };
+    transporter.sendMail(mailData, function (err, info) {
+        if (err)
+            res.json(errorResonse(err))
+
+        else
+            res.json(succesResponse(info))
+
+    });
+}
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.findAll({
@@ -189,4 +217,4 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = { getAllUsers, checkEmail, createUser, updateUser, deleteUser, getUserByIdFunction, getUserById, login, loginFromGoogle, logout }
+module.exports = { getAllUsers, checkEmail, createUser, updateUser, deleteUser, getUserByIdFunction, getUserById, login, loginFromGoogle, logout, sendMail }
