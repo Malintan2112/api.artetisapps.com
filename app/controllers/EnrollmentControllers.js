@@ -14,6 +14,19 @@ const createEnrollment = async (req, res) => {
     }
 }
 
+const updateEnrollment = async (req, res) => {
+    try {
+
+        const a = await Enrollment.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        return res.status(201).json(succesResponse({ msg: "Wilayah Berhasil di Update" }))
+    } catch (error) {
+        return res.json(errorResonse(`Terjadi Kesalahan Server Saat Wilayah`))
+    }
+}
 const getAllEnrollment = async (req, res) => {
     try {
         const { enrollmentId } = req.query
@@ -39,4 +52,4 @@ const getAllEnrollment = async (req, res) => {
     }
 }
 
-module.exports = { createEnrollment, getAllEnrollment }
+module.exports = { createEnrollment, getAllEnrollment, updateEnrollment }

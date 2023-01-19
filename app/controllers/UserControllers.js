@@ -32,6 +32,66 @@ const sendMail = async (req, res) => {
 
     });
 }
+
+const generatePassword = () => {
+    var length = 6,
+        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        retVal = "";
+    for (var i = 0, n = charset.length; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return retVal;
+}
+const sendEmailTemplate = (email, subject, body, res) => {
+    const transporter = nodemailer.createTransport({
+        port: 465,               // true for 465, false for other ports
+        host: "smtp.gmail.com",
+        auth: {
+            user: 'artetismail@gmail.com',
+            pass: 'yvtzsttxrxaqypkr',
+        },
+        secure: true,
+    });
+    const mailData = {
+        from: 'artetismail@gmail.com',  // sender address
+        to: email,   // list of receivers
+        subject: subject,
+        text: subject,
+        html: body,
+
+    };
+    transporter.sendMail(mailData, function (err, info) {
+        if (err) {
+            return res.json(errorResonse(`${subject} gagal mengirim email`))
+
+        } else {
+            return res.status(200).json(succesResponse({ msg: `${subject} berhasil` }))
+
+        }
+    });
+}
+const updatePassword = async (req, res) => {
+    try {
+        const isEmailExisting = await checkEmail(req.body.email)
+        if (isEmailExisting) {
+            const password = generatePassword()
+            const salt = await bcrypt.genSalt();
+            const hashPassword = await bcrypt.hash(password, salt);
+            await User.update({ password: hashPassword }, {
+                where: {
+                    email: req.body.email
+                }
+            });
+            const desc = `Berikut merupakan password baru anda, mohon jangan sebarkan ke orang yg tidak berkepentingan. password = <b>${password}</b>`
+            sendEmailTemplate(req.body.email, 'Reset Password', desc, res)
+
+        } else {
+            return res.json(errorResonse('Akun Email tidak ditemukan'))
+        }
+    } catch (error) {
+        return res.json(errorResonse('error server'))
+    }
+}
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.findAll({
@@ -218,4 +278,4 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = { getAllUsers, checkEmail, createUser, updateUser, deleteUser, getUserByIdFunction, getUserById, login, loginFromGoogle, logout, sendMail }
+module.exports = { getAllUsers, checkEmail, createUser, updateUser, deleteUser, getUserByIdFunction, getUserById, login, loginFromGoogle, logout, sendMail, updatePassword }
