@@ -17,10 +17,11 @@ const sendMail = async (req, res) => {
     });
     const mailData = {
         from: 'artetismail@gmail.com',  // sender address
-        to: 'malintanhernawanputra.net@gmail.com',   // list of receivers
+        to: 'novasetyaningrum.ns@gmail.com',   // list of receivers
         subject: 'OTP Verifikasi ',
         text: 'OTP Verifikasi',
-        html: 'Berikut kode OTP Anda <b>40375</b> ',
+        html: 'Klik tautan berikut untuk verifikasi email anda, <b><a href="https://artetisapps.com/">verifikasi email</a>.</b>',
+
     };
     transporter.sendMail(mailData, function (err, info) {
         if (err)
