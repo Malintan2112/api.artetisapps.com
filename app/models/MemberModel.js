@@ -14,7 +14,7 @@ const Member = db.define('members', {
         allowNull: true
     },
     homeNumber: {
-        type: DataTypes.STRING(4),
+        type: DataTypes.DOUBLE(4),
         allowNull: true
     },
     name: {

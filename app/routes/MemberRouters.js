@@ -4,7 +4,7 @@ const MemberRouter = express.Router()
 
 MemberRouter.get('/', getAllMember)
 MemberRouter.get('/print/:idEnrollment', printMember)
-MemberRouter.get('/:idEnrollment', getMemberByIdEnrollment)
+// MemberRouter.get('/:idEnrollment', getMemberByIdEnrollment)
 MemberRouter.get('/organizational', getOrganizationalStructure)
 
 MemberRouter.get('/email', getAllMember)
