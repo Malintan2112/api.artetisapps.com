@@ -3,9 +3,61 @@ const { errorResonse, succesResponse } = require('./JsonDefault.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
+const excelJS = require("exceljs");
+
+const printExcell = async (req, res) => {
+    const UserData = [{
+        fname: "Amir",
+        lname: "Mustafa",
+        email: "amir@gmail.com",
+        gender: "Male"
+    }, {
+        fname: "Ashwani",
+        lname: "Kumar",
+        email: "ashwani@gmail.com",
+        gender: "Male",
+    }, {
+        fname: "Nupur",
+        lname: "Shah",
+        email: "nupur@gmail.com",
+        gender: "Female"
+    }, {
+        fname: "Himanshu",
+        lname: "Mewari",
+        email: "himanshu@gmail.com",
+        gender: "Male",
+    }, {
+        fname: "Vankayala",
+        lname: "Sirisha",
+        email: "sirisha@gmail.com",
+        gender: "Female",
+    },];
+    const workbook = new excelJS.Workbook();
+    const worksheet = workbook.addWorksheet("My Users");
+    const path = "./tempData";
+    worksheet.columns = [{ header: "S no.", key: "s_no", width: 10 },
+    { header: "First Name", key: "fname", width: 10 },
+    { header: "Last Name", key: "lname", width: 10 },
+    { header: "Email Id", key: "email", width: 10 },
+    { header: "Gender", key: "gender", width: 10 },];
+
+    let counter = 1;
+    UserData.forEach((user) => {
+        user.s_no = counter; worksheet.addRow(user);
+        counter++;
+    });
+    worksheet.getRow(1).eachCell((cell) => { cell.font = { bold: true }; });
+    try {
+        const data = await workbook.xlsx.writeFile(`${path}/users.xlsx`).then(() => {
+            res.send({ status: "success", message: "file successfully downloaded", path: `${path}/users.xlsx`, });
+            // res.download(`${path}/users.xlsx`)
+        });
+    } catch (err) {
+        res.send({ status: "error", message: "Something went wrong", });
+    }
+}
 
 const sendMail = async (req, res) => {
-
     const transporter = nodemailer.createTransport({
         port: 465,               // true for 465, false for other ports
         host: "smtp.gmail.com",
@@ -278,4 +330,18 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = { getAllUsers, checkEmail, createUser, updateUser, deleteUser, getUserByIdFunction, getUserById, login, loginFromGoogle, logout, sendMail, updatePassword }
+module.exports = {
+    getAllUsers,
+    checkEmail,
+    createUser,
+    updateUser,
+    deleteUser,
+    getUserByIdFunction,
+    getUserById,
+    login,
+    loginFromGoogle,
+    logout,
+    sendMail,
+    updatePassword,
+    printExcell
+}

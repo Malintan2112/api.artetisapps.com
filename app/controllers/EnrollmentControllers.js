@@ -1,6 +1,9 @@
 
 const { errorResonse, succesResponse } = require('./JsonDefault.js')
 const { User, Enrollment, Member } = require('../models/index.js')
+
+
+
 const createEnrollment = async (req, res) => {
     try {
         const a = await Enrollment.create(req.body);

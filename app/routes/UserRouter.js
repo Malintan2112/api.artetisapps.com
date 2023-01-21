@@ -1,6 +1,6 @@
 
 const express = require('express')
-const { createUser, getAllUsers, login, logout, getUserById, loginFromGoogle, sendMail, updatePassword } = require('../controllers/UserControllers.js')
+const { createUser, getAllUsers, login, logout, getUserById, loginFromGoogle, sendMail, updatePassword, printExcell } = require('../controllers/UserControllers.js')
 const refreshToken = require('../controllers/RefreshTokenController.js')
 const verifyToken = require('../middleware/VerifyToken.js')
 const UserRouter = express.Router()
@@ -14,6 +14,8 @@ UserRouter.get('/logout', logout)
 UserRouter.get('/:id', getUserById)
 UserRouter.get('/send/mail', sendMail)
 UserRouter.put('/updatePassword', updatePassword)
+UserRouter.get('/report/printExcell', printExcell)
+
 
 
 

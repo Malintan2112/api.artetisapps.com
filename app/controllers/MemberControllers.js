@@ -12,7 +12,7 @@ const { Op } = require('sequelize')
 
 
 const { createCanvas, loadImage } = pkg;
-const { chunk, isEmpty } = pkgLodash
+const { chunk, isEmpty, get } = pkgLodash
 
 
 const createMember = async (req, res) => {
@@ -173,7 +173,8 @@ const printMember = async (req, res) => {
         const members = await Member.findAll(
             {
                 where: {
-                    role: 'MEMBER'
+                    role: 'MEMBER',
+                    enrollmentId: req.params.idEnrollment
                 },
                 include: Enrollment
             }
@@ -181,7 +182,7 @@ const printMember = async (req, res) => {
         const listInnerData = chunk(members, 3)
         const listOuterData = chunk(listInnerData, 3)
         const currentDate = new Date()
-       res.pdfFromHTML({
+        res.pdfFromHTML({
             filename: 'members.pdf',
             htmlContent: `
             <!DOCTYPE html>
@@ -203,7 +204,6 @@ const printMember = async (req, res) => {
                     if (dataInner.length === 2) fixingData = [...dataInner, {}]
                     else fixingData = [...dataInner, {}, {}]
                 } else fixingData = dataInner
-
                 return `
                                             <tr>
                                                 ${fixingData.map((data) => `
@@ -211,11 +211,10 @@ const printMember = async (req, res) => {
                                                     <td>
                                                         <div style="font-size:200%%;"><b>${data.homeNumber || ''}</b></div>
                                                         <div style="font-size:100%;margin-bottom:5px;">RT ${data.rt || ''} RW ${data.rw || ''}</div>
-                                                        <div style="font-size:60%; color:gray;">KEL ${data.enrollment.subDistrict || ''}</div>
-                                                        <div style="font-size:60%; color:gray;">KEC  ${data.enrollment.district || ''}</div>
+                                                        <div style="font-size:60%; color:gray;">KEL ${get(data, 'enrollment.subDistrict', '')}</div>
+                                                        <div style="font-size:60%; color:gray;">KEC  ${get(data, 'enrollment.district', '')}</div>
                                                         <div style="font-size:30%; margin-top:5px;color:gray;">created by artetis.com </div>
                                                         <div style="font-size:30%; margin-top:2px;color:gray;">${dateParser(currentDate, true)}</div>
-
                                                     </td> 
                                                 `)}         
                                             </tr>

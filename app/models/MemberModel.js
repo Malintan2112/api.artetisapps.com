@@ -6,11 +6,11 @@ const { DataTypes } = Sequelize
 
 const Member = db.define('members', {
     rw: {
-        type: DataTypes.STRING(3),
+        type: DataTypes.INTEGER(3),
         allowNull: true
     },
     rt: {
-        type: DataTypes.STRING(3),
+        type: DataTypes.INTEGER(3),
         allowNull: true
     },
     homeNumber: {
